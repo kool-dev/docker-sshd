@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+if [ ! -z "${AUTHORIZED_KEYS}" ]; then
+    echo ${AUTHORIZED_KEYS} > /home/kool/.ssh/authorized_keys
+
+elif [ -f "/authorized_keys" ]; then
+    cp /authorized_keys /home/kool/.ssh/authorized_keys
+else
+    echo "Env var AUTHORIZED_KEYS or /authorized_keys required."
+    exit 1
+fi
+
+chown kool:kool /home/kool/.ssh/authorized_keys
+
+exec "$@"
