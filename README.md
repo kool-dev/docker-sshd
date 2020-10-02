@@ -1,5 +1,7 @@
 # kool-dev/docker-sshd
 
+![CI/CD](https://github.com/kool-dev/docker-sshd/workflows/CI/CD/badge.svg)
+
 Very simple docker image for running a SSH Server.
 
 By default it has a user `kool` and can only be logged using SSH Keys by:
