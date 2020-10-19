@@ -9,7 +9,8 @@ RUN adduser -D -u 1337 kool && \
     chmod 700 /home/kool/.ssh && \
     chown kool:kool /home/kool/.ssh && \
     ssh-keygen -A && \
-    sed -i s/^#PasswordAuthentication\ yes/PasswordAuthentication\ no/ /etc/ssh/sshd_config
+    sed -i s/^#PasswordAuthentication\ yes/PasswordAuthentication\ no/ /etc/ssh/sshd_config && \
+    sed -i s/^AllowTcpForwarding\ no/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config
 
 COPY entrypoint /entrypoint
 
