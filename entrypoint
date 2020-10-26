@@ -2,9 +2,8 @@
 
 set -e
 
-if [ ! -z "${AUTHORIZED_KEYS}" ]; then
-    echo ${AUTHORIZED_KEYS} > /home/kool/.ssh/authorized_keys
-
+if [ ! -z "$AUTHORIZED_KEYS" ]; then
+    echo "$AUTHORIZED_KEYS" > /home/kool/.ssh/authorized_keys
 elif [ -f "/authorized_keys" ]; then
     cp /authorized_keys /home/kool/.ssh/authorized_keys
 else
