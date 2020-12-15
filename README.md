@@ -19,6 +19,16 @@ AUTHORIZED_KEYS=$(cat authorized_keys.txt)
 docker run --rm --init -p22:22 -e AUTHORIZED_KEYS=${AUTHORIZED_KEYS} kooldev/sshd
 ```
 
+To create new user and add the authorized keys to this user, add username with an suffix to `AUTHORIZED_KEYS` as in the example.  
+Username will be converted to lowercase
+```bash
+AUTHORIZED_KEYS=$(cat authorized_keys.txt)
+
+docker run --rm --init -p22:22 -e AUTHORIZED_KEYS=${AUTHORIZED_KEYS} -e AUTHORIZED_KEYS_RETOOL=${AUTHORIZED_KEYS} kooldev/sshd
+```
+
+This example will create `/home/retool/.ssh/authorized_keys` and `/home/kool/.ssh/authorized_keys`
+
 ### Mount File
 
 ```bash

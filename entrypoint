@@ -1,10 +1,9 @@
 #!/bin/sh
-
 set -e
 
-if [ ! -z "$AUTHORIZED_KEYS" ]; then
-    echo "$AUTHORIZED_KEYS" > /home/kool/.ssh/authorized_keys
-elif [ -f "/authorized_keys" ]; then
+if [ -n "${AUTHORIZED_KEYS}" ]; then
+    echo "${AUTHORIZED_KEYS}" > /home/kool/.ssh/authorized_keys
+elif [ -f /authorized_keys ]; then
     cp /authorized_keys /home/kool/.ssh/authorized_keys
 else
     echo "Env var AUTHORIZED_KEYS or /authorized_keys required."
@@ -12,5 +11,20 @@ else
 fi
 
 chown kool:kool /home/kool/.ssh/authorized_keys
+
+for KEY in $(env | grep '^AUTHORIZED_KEYS_' | awk -F '\n' '{ print substr($0, 0, index($0, "=") - 1) }');
+do
+  USER=$(echo "${KEY}" | awk '{ gsub("AUTHORIZED_KEYS_", "", $1); print tolower($1) }')
+
+  if [ ! -d /home/"${USER}"/.ssh ]; then
+    adduser -D "${USER}"
+    mkdir -p /home/"${USER}"/.ssh
+    chmod 700 /home/"${USER}"/.ssh
+    chown "${USER}":"${USER}" /home/"${USER}"/.ssh
+  fi
+
+  eval "echo \$${KEY}" > /home/"${USER}"/.ssh/authorized_keys
+  chown "${USER}":"${USER}" /home/"${USER}"/.ssh/authorized_keys
+done
 
 exec "$@"
