@@ -16,7 +16,7 @@ By default it has a user `kool` and can only be logged using SSH Keys by:
 ```bash
 AUTHORIZED_KEYS=$(cat authorized_keys.txt)
 
-docker run --rm --init -p22:22 -e AUTHORIZED_KEYS=${AUTHORIZED_KEYS} kooldev/sshd
+docker run --rm --init -p22:22 -e AUTHORIZED_KEYS=${AUTHORIZED_KEYS} -e SSH_USERNAME='kool' kooldev/sshd
 ```
 
 ### Mount File
