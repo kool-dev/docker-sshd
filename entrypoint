@@ -1,16 +1,55 @@
 #!/bin/sh
-
 set -e
 
-if [ ! -z "$AUTHORIZED_KEYS" ]; then
-    echo "$AUTHORIZED_KEYS" > /home/kool/.ssh/authorized_keys
-elif [ -f "/authorized_keys" ]; then
-    cp /authorized_keys /home/kool/.ssh/authorized_keys
-else
-    echo "Env var AUTHORIZED_KEYS or /authorized_keys required."
-    exit 1
-fi
+createUser()
+{
+  USER=$1
 
-chown kool:kool /home/kool/.ssh/authorized_keys
+  if ! id $USER > /dev/null 2>&1; then
+    adduser -D $USER
+  fi
+
+  mkdir -p /home/$USER/.ssh
+  chmod 700 /home/$USER/.ssh
+  chown $USER:$USER /home/$USER/.ssh
+}
+
+writeAuthorizedKeys()
+{
+  USER=$1
+  AUTHORIZED_KEYS=$2
+
+  echo "$AUTHORIZED_KEYS" > /home/$USER/.ssh/authorized_keys
+  chown $USER:$USER /home/$USER/.ssh/authorized_keys
+}
+
+readEnvironment()
+{
+  for KEY in $(env | grep '^AUTHORIZED_KEYS_' | awk -F '\n' '{ print substr($0, 0, index($0, "=") - 1) }');
+  do
+    USER=$(echo $KEY | awk '{ gsub("AUTHORIZED_KEYS_", "", $1); print tolower($1) }')
+    AUTHORIZED_KEYS=$(eval "echo \"\$$KEY\"")
+
+    createUser $USER
+    writeAuthorizedKeys $USER "$AUTHORIZED_KEYS"
+  done
+}
+
+readFile()
+{
+  for KEY in /authorized_keys_*;
+  do
+    [ -e $KEY ] || break
+
+    USER=$(echo $KEY | awk '{ gsub("/authorized_keys_", "", $1); print tolower($1) }')
+    AUTHORIZED_KEYS=$(cat $KEY)
+
+    createUser $USER
+    writeAuthorizedKeys $USER "$AUTHORIZED_KEYS"
+  done
+}
+
+readFile
+readEnvironment
 
 exec "$@"
