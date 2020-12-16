@@ -32,10 +32,10 @@ jobs:
       - name: Tests
         run: |
           AUTHORIZED_KEYS="something"
-          docker run --rm --init -e AUTHORIZED_KEYS=$AUTHORIZED_KEYS kooldev/sshd which sshd
+          docker run --rm --init -e AUTHORIZED_KEYS_KOOL=$AUTHORIZED_KEYS kooldev/sshd which sshd
 
-          touch authorized_keys
-          docker run --rm --init -v "$(pwd)/authorized_keys:/authorized_keys" kooldev/sshd which sshd
+          touch authorized_keys_kool
+          docker run --rm --init -v "$(pwd)/authorized_keys_kool:/authorized_keys_kool" kooldev/sshd which sshd
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
