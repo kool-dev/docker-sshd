@@ -16,7 +16,7 @@ Username will be created with suffix that end the env `AUTHORIZED_KEYS_` convert
 ```bash
 AUTHORIZED_KEYS=$(cat authorized_keys.txt)
 
-docker run --rm --init -p22:22 -e AUTHORIZED_KEYS_USERNAME=${AUTHORIZED_KEYS} kooldev/sshd
+docker run --rm --init -p22:22 -e AUTHORIZED_KEYS_USER1=${AUTHORIZED_KEYS} -e AUTHORIZED_KEYS_USER2=${AUTHORIZED_KEYS} kooldev/sshd
 ```
 
 This example will create `/home/retool/.ssh/authorized_keys` and `/home/kool/.ssh/authorized_keys`
@@ -24,7 +24,7 @@ This example will create `/home/retool/.ssh/authorized_keys` and `/home/kool/.ss
 ### Mount File
 
 ```bash
-docker run --rm --init -p22:22 -v "$(pwd)/authorized_keys_username:/authorized_keys_username" kooldev/sshd
+docker run --rm --init -p22:22 -v "$(pwd)/authorized_keys_user1:/authorized_keys_user1" -v "$(pwd)/authorized_keys_user2:/authorized_keys_user2" kooldev/sshd
 ```
 
 That's it, now you can ssh in:
